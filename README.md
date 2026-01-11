@@ -54,7 +54,7 @@ Generates a professional **PDF Dashboard** designed to be reviewed by a clinicia
 
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Framework** | **NextJS** | Interactive UI for high-speed, low-friction logging. |
+| **Framework** | **NextJS** | Provides the full-stack architecture, utilizing API routes for OpenAI integration and SSR for generating static, printable reports. |
 | **Frontend** | **React** | Interactive UI for high-speed, low-friction logging. |
 | **Database / ORM** | **Prisma** | Type-safe schema management for complex health variables. |
 | **Authentication** | **NextAuth.js / OAuth 2.0** | Secure, modern authentication and profile management. |
