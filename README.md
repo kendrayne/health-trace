@@ -34,7 +34,7 @@ A centralized interface to log the variables that impact daily well-being:
 * **Contextual Factors:** Tracking for stress levels and mood to capture environmental triggers.
 
 ### 2. The "One-Click" Demo (The Alex Profile)
-To provide a frictionless review for hiring managers, the app features a **Seeded Demo Profile**:
+To provide a frictionless review for demo and privacy purposes, the app features a **Seeded Demo Profile**:
 * **User Persona:** "Alex", a patient tracking chronic fatigue, headaches and recurring symptoms.
 * **Seeded Data:** 30 days of pre-populated logs demonstrating high-intensity tracking.
 * **Immediate Review:** Ability to see the data visualization and AI summary features in action without manual entry.
