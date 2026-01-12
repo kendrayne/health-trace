@@ -1,0 +1,195 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+model User {
+  id                    String    @id @default(cuid())
+  name                  String?
+  email                 String?   @unique
+  emailVerified         DateTime?
+  password              String?   
+  image                 String?
+  sex                   String?   
+  birthday              DateTime? 
+
+  // gen health stats
+  weight                Float?
+  height                Float?
+
+  // 0 (sedentary), 1 (light), 2 (moderate), 3 (high)
+  physicalActivityLevel Int?      @default(0)
+
+  // relations
+  accounts              Account[]
+  sessions              Session[]
+  conditions            UserCondition[]
+  medications           Medication[]   
+  symptoms              Symptom[]
+  healthLogs            HealthLog[]
+  reports               Report[]
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  // security - ability to remove sessions from devices within app.
+  userAgent    String?
+  ipAddress    String?
+  location     String?
+  lastActive   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
+
+model Report {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // date range is meant to be 30 days but range can be customized.
+  startDate    DateTime // 30 days ago
+  endDate      DateTime // 30 days out
+  
+  summaryData  Json     
+  
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+}
+
+model BodyPart {
+  id       String    @id @default(cuid())
+  name     String    @unique
+
+  // shorthand abbrv for body parts, find list in resources.md
+  slug     String    @unique 
+  
+  symptoms Symptom[]
+}
+
+model Symptom {
+  id             String          @id @default(cuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id])
+  bodyPartId     String
+  bodyPart       BodyPart        @relation(fields: [bodyPartId], references: [id])
+  description    String?
+  
+  // relations for historical tracking
+  loggedSymptoms LoggedSymptom[]
+  createdAt      DateTime        @default(now())
+}
+
+model Medication {
+  id               String             @id @default(cuid())
+  name             String
+
+  defaultStrength  Float?    
+         
+  /// "mg", "ml", "pills"
+  unit             String?
+  userId           String
+  user             User               @relation(fields: [userId], references: [id])
+  
+  // onDelete: restrict ensures medicine history is not deleted if a med is removed from user profile
+  loggedMedications LoggedMedication[]
+}
+
+
+model LoggedSymptom {
+  id          String    @id @default(cuid())
+  severity    Int       @default(1) // user input 1-10
+  
+  symptomId   String
+  symptom     Symptom   @relation(fields: [symptomId], references: [id])
+  
+  healthLogId String
+  healthLog   HealthLog @relation(fields: [healthLogId], references: [id], onDelete: Cascade)
+
+  /// time the symptom occurred - user input
+  occurredAt  DateTime  @default(now())
+}
+
+model LoggedMedication {
+  id            String     @id @default(cuid())
+
+  strengthTaken Float?    
+  // will ask user if they're changing doses and will ask if they'd like to update defaultstrength in their med profile
+
+  medicationId  String
+  medication    Medication @relation(fields: [medicationId], references: [id], onDelete: Restrict)
+  
+  healthLogId   String
+  healthLog     HealthLog  @relation(fields: [healthLogId], references: [id], onDelete: Cascade)
+
+  /// Specific time the medication was taken user input
+  takenAt       DateTime   @default(now())
+}
+
+model HealthLog {
+  id                String             @id @default(cuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id])
+  
+  // common lifestyle triggers 1 light 2 moderate 3 heavy
+  nicotine          Int                @default(1) // 1-3
+  caffeine          Int                @default(1) // 1-3
+  alcohol           Int                @default(1) // 1-3
+  
+  // food + exercise tracking
+  /// 1 (healthy), 2 (average/balanced), 3 (real bad)
+  dietQuality       Int                @default(2)
+
+  /// 0 (none), 1 (light), 2 (moderate), 3 (vigorous)
+  exercised         Int                @default(0)
+
+
+  loggedSymptoms    LoggedSymptom[]
+  loggedMedications LoggedMedication[]
+
+  // normalized date - one log per user per day
+  date              DateTime           @default(now())
+  @@unique([userId, date])
+}
+
+model UserCondition {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  notes     String?
+}
