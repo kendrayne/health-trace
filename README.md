@@ -34,7 +34,7 @@ A centralized interface to log the variables that impact daily well-being:
 * **Contextual Factors:** Tracking for stress levels and mood to capture environmental triggers.
 
 ### 2. The "One-Click" Demo (The Alex Profile)
-To provide a frictionless review for hiring managers, the app features a **Seeded Demo Profile**:
+To provide a frictionless review for demo and privacy purposes, the app features a **Seeded Demo Profile**:
 * **User Persona:** "Alex", a patient tracking chronic fatigue, headaches and recurring symptoms.
 * **Seeded Data:** 30 days of pre-populated logs demonstrating high-intensity tracking.
 * **Immediate Review:** Ability to see the data visualization and AI summary features in action without manual entry.
@@ -54,7 +54,7 @@ Generates a professional **PDF Dashboard** designed to be reviewed by a clinicia
 
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Framework** | **NextJS** | Interactive UI for high-speed, low-friction logging. |
+| **Framework** | **NextJS** | Provides the full-stack architecture, utilizing API routes for OpenAI integration and SSR for generating static, printable reports. |
 | **Frontend** | **React** | Interactive UI for high-speed, low-friction logging. |
 | **Database / ORM** | **Prisma** | Type-safe schema management for complex health variables. |
 | **Authentication** | **NextAuth.js / OAuth 2.0** | Secure, modern authentication and profile management. |
