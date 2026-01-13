@@ -1,24 +1,20 @@
+// app/api/auth/[...nextauth]/route.ts
 import NextAuth, { NextAuthOptions } from "next-auth";
-import Google from "next-auth/providers/google";
-import Credentials from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/app/lib/db";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
+import { prisma } from "@/app/lib/db";
 import { LoginSchema } from "@/schemas";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
-
   session: { strategy: "jwt" },
-
-  pages: { signIn: "/login", signOut: '/' },
-
+  pages: { signIn: "/login", signOut: "/" },
   providers: [
-    Google({
+    GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
-    Credentials({
+    CredentialsProvider({
       name: "Credentials",
       credentials: { email: {}, password: {} },
       async authorize(credentials) {
@@ -39,7 +35,6 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-
   callbacks: {
     async jwt({ token, user }) {
       if (user) token.sub = user.id;
@@ -51,7 +46,6 @@ export const authOptions: NextAuthOptions = {
     },
   },
 };
-
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
