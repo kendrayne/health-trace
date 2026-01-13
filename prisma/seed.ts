@@ -1,21 +1,17 @@
-import { PrismaClient } from '@prisma/client'
-import { withAccelerate } from '@prisma/extension-accelerate'
-import * as dotenv from 'dotenv'
+import { PrismaClient } from "@prisma/client";
+import 'dotenv/config';
 
-// 1. Manually load the .env file
-dotenv.config()
 
-// 2. Initialize the client with the explicit accelerateUrl
-// We use a fallback check to make sure it's not undefined
-const url = process.env.DATABASE_URL
+const url = process.env.DATABASE_URL;
+if (!url) throw new Error("DATABASE_URL is not defined in your .env file");
 
-if (!url) {
-  throw new Error("DATABASE_URL is not defined in your .env file")
+const prismaGlobal = globalThis as unknown as { prisma: PrismaClient | undefined };
+export const prisma =
+  prismaGlobal.prisma ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') {
+  prismaGlobal.prisma = prisma;
 }
-
-const prisma = new PrismaClient({
-  accelerateUrl: url,
-}).$extends(withAccelerate())
 
 async function main() {
     console.log("s-eed starting-");
@@ -23,7 +19,10 @@ async function main() {
     // Alex Demo user
     const seedUser = await prisma.user.upsert({
         where: { email: 'alex@example.com' },
-        update: {},
+        update: {
+            password: 'Demo1212!',
+            emailVerified: new Date(),
+        },
         create: {
             email: 'alex@example.com',
             name: 'Alex Demo',

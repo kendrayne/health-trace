@@ -8,11 +8,14 @@
     "start": "next start",
     "lint": "eslint"
   },
+  "prisma": {
+ "seed": "npx tsx prisma/seed.ts"
+},
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
     "@next/font": "^14.2.15",
     "@prisma/adapter-pg": "^7.2.0",
-    "@prisma/client": "^7.2.0",
+    "@prisma/client": "^6.14.0",
     "@prisma/extension-accelerate": "^3.0.1",
     "bcryptjs": "^3.0.3",
     "lucide-react": "^0.562.0",
@@ -40,8 +43,9 @@
     "eslint-config-next": "16.1.1",
     "jsdom": "^27.4.0",
     "playwright": "^1.57.0",
-    "prisma": "^7.2.0",
+    "prisma": "^6.14.0",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.0.4",
     "vitest": "^4.0.17",
