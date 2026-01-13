@@ -1,28 +1,51 @@
 @import "tailwindcss";
 
-@theme inline {
-  /* light/dark bg */
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Surface Colors */
   --color-surface-light: #F6FDFF;
   --color-surface-dark: #04151F;
 
-  /* accents */
-  --color-pacific-500: #388697;
-  --color-brand-pacific-secondary: #6FB5C2;
-  --color-tangerine-500: #F2A183;
-  --color-brand-tangerine-secondary: #F7B49C;
+  /* Pacific Scale */
+   --color-pacific-50: #E7F3F5;
+   --color-pacific-100: #CFE7EB;
+   --color-pacific-200: #9FCED6;
+   --color-pacific-300: #6FB5C2;
+   --color-pacific-400: #4F9EAD;
+   --color-pacific-500: #388697;
+   --color-pacific-600: #2D6B79;
+   --color-pacific-700: #22515B;
+   --color-pacific-800: #17363D;
+   --color-pacific-900: #0B1B1E;
 
+  /* Peach Scale */
+   --color-peach-50: #FEF6F3;
+   --color-peach-100: #FDECE6;
+   --color-peach-200: #FAD0C1;
+   --color-peach-300: #F7B49C;
+   --color-peach-400: #F59E7E;
+   --color-peach-500: #F2A183;
+   --color-peach-600: #C28169;
+   --color-peach-700: #91614F;
+   --color-peach-800: #614035;
+   --color-peach-900: #30201A;
 
-  --color-brand-primary: var(--color-pacific-500);
-  --color-brand-accent: var(--color-tangerine-500);
-  /* ui states */
-  --color-success: #C9EDDC;
-  --color-warning: #F2A183; /* Using your tangerine for warnings */
+  /* Mint Scale */
+  --color-mint-light: #C9EDDC;
+  --color-mint: #A8DABD;
+  --color-mint-dark: #7FB89A;
+
+  /* Layout Variables - This handles your 'squish' */
+  --spacing-nav-padding: 3rem;
 }
 
-html { 
-background-color: var(--color-surface-light);
-}
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
+/* Base resets */
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
 }

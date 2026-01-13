@@ -1,10 +1,12 @@
-import Image from "next/image";
+import Navbar from '@/components/navbar/navbar';
+import LandingPage from './LandingPage';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center font-sans ">
-      <main className="flex min-h-screen w-full flex-col items-center bg-yellow-50 justify-between py-32 px-16">
-
+    <div className="flex min-h-screen w-full bg-surface-light dark:bg-surface-dark">
+      <main className="flex flex-col w-full">
+        <Navbar />
+        <LandingPage/>
       </main>
     </div>
   );

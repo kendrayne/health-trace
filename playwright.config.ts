@@ -5,5 +5,11 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:3000',
     headless: true,
+    trace: 'off',
+    video: 'off',
+    screenshot: 'off',
   },
+   workers: 1,
 })
+
+ 
