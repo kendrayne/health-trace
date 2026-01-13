@@ -5,7 +5,7 @@ import Button from "@/components/button/button";
 import { TabsDrawer } from "@/components/tabs-drawer/tabs-drawer";
 import { TemporalCorrelationChart } from "@/components/temporal-correlation-chart/temporal-correlation-chart";
 import { Greeting } from "@/components/greeting/greeting";
-export default function Settings() {
+export default function Dashboard() {
 
   return (
       // {/* header */}

@@ -21,6 +21,7 @@ export const TabsDrawer = () => {
           id: "addLog", 
           icon: <HeartPlus className="w-7 h-7 stroke-pacific-500 dark:stroke-pacific-300"/>,
           // action: () => {},
+          // create modal for comprehensive HealthLog creation
 
         },
         {

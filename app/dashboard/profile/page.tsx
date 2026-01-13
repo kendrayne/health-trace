@@ -4,7 +4,7 @@ import { ThemeToggle } from "@/components/theme-toggle/theme-toggle";
 import Button from "@/components/button/button";
 import { TabsDrawer } from "@/components/tabs-drawer/tabs-drawer";
 
-export default function Dashboard() {
+export default function Profile() {
   return (
       // {/* header */}
     <div className="bg-surface-light dark:bg-surface-dark w-full py-8">
