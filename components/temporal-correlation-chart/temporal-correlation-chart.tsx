@@ -63,7 +63,7 @@ export const TemporalCorrelationChart = () => {
 
     return (
         // chart container
-        <div className="max-w-4xl w-4xl bg-pacific-300 dark:pacific-800/90 relative">
+        <div className="max-w-5xl w-5xl bg-pacific-300 dark:pacific-800/90 relative pt-20 h-full">
             {/* 
             structure
             _________________________

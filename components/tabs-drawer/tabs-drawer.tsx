@@ -1,6 +1,8 @@
 'use client';
 import { HeartPlus, HomeIcon, Settings, User2Icon } from "lucide-react";
-import { useState } from "react";
+import { useContext, useEffect } from "react";
+import { TabContext } from "@/context/tab.context";
+
 import Link from "next/link";
 
 type TabOption = {
@@ -11,6 +13,10 @@ type TabOption = {
 }[]
 
 export const TabsDrawer = () => {
+  const { activeTab, setActiveTab } = useContext(TabContext);
+
+
+
     const TABS: TabOption = [
         {
           id: "home", 
@@ -37,16 +43,16 @@ export const TabsDrawer = () => {
       ]
 
       return (
-        <div className="px-4 mb-12">
+        <div className="px-4 relative right-4">
 {TABS.map((tab) => (
     tab.href ? (
-       <Link href={tab.href} key={tab.id}>
-        <div className="p-4">
+       <Link href={tab.href} key={tab.id} onClick={() => setActiveTab(tab.href!)}>
+        <div className={activeTab === tab.href ? 'border-l-peach-500 border-l-6 p-4' : "border-l-transparent border-l-6 p-4"}>
           {tab.icon}
         </div>
        </Link>
     ) : (
-       <div className="p-4" key={tab.id}>
+       <div className={activeTab === tab.href ? 'border-l-peach-500 border-l-6 p-4' : "border-l-transparent border-l-6 p-4"} key={tab.id} onClick={() => setActiveTab(tab.href!)}>
           {tab.icon}
         </div>
     )

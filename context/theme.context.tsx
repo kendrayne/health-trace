@@ -43,7 +43,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const value = {
     darkModeEnabled,
     setDarkModeEnabled
-  };
+  }
 
   return (
     <ThemeContext.Provider value={value}>

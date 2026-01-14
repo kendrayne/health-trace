@@ -9,9 +9,11 @@ export default function Dashboard() {
 
   return (
       // {/* header */}
-    <div className="bg-surface-light dark:bg-surface-dark w-full py-8">
+
+      <div className="bg-surface-light dark:bg-surface-dark w-full h-100 min-h-screen flex flex-col">
       {/* logout & dark mode container */}
       <div className="w-full px-14 py-4 flex justify-between items-center">
+      <Greeting/>
         <div className="flex justify-center items-center bg-yellow-550">
         </div>
         <div className="flex justify-end gap-6">
@@ -19,17 +21,17 @@ export default function Dashboard() {
       <Button href={""} title={""} buttonType="logout"/>
         </div>
       </div>
-      <Greeting/>
 
           
-      <main className="flex w-full h-full">
+      <main className="w-full flex flex-row h-100 flex-1">
+      <div className="flex flex-col max-w-22 w-full gap-12 justify-center">
       {/* tab drawer */}
-      <div className="flex flex-col h-full max-w-32 w-full gap-12 justify-center">
         <TabsDrawer/>
       </div>
       <TemporalCorrelationChart/>
       </main>
     </div>
+
   );
 }
 

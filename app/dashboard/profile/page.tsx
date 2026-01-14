@@ -6,27 +6,25 @@ import { TabsDrawer } from "@/components/tabs-drawer/tabs-drawer";
 
 export default function Profile() {
   return (
-      // {/* header */}
-    <div className="bg-surface-light dark:bg-surface-dark w-full py-8">
-      {/* logout & dark mode container */}
-      <div className="w-full px-14 py-4 flex justify-between items-center">
-        <div className="flex justify-start">
-
-          <h1 className="text-5xl text-pacific-300 dark:pacific-100">Health Profile</h1> 
+        // {/* header */}
+      <div className="bg-surface-light dark:bg-surface-dark w-full h-100 min-h-screen flex flex-col">
+        {/* logout & dark mode container */}
+        <div className="w-full px-14 py-4 flex justify-between items-center">
+          <div className="flex justify-center items-center bg-yellow-550">
+          </div>
+          <div className="flex justify-end gap-6">
+        <ThemeToggle/>
+        <Button href={""} title={""} buttonType="logout"/>
+          </div>
         </div>
-        <div className="flex justify-end gap-6">
-      <ThemeToggle/>
-      <Button href={""} title={""} buttonType="logout"/>
+  
+            
+        <main className="w-full flex flex-row h-100 flex-1">
+        <div className="flex flex-col max-w-22 w-full gap-12 justify-center">
+          <TabsDrawer/>
         </div>
+        {/* tab drawer */}
+        </main>
       </div>
-
-
-     <main className="flex w-full h-full">
-      {/* tab drawer */}
-      <div className="flex flex-col h-full max-w-32 w-full gap-12 justify-center">
-        <TabsDrawer/>
-      </div>
-      </main>
-    </div>
-  );
+  )
 }
