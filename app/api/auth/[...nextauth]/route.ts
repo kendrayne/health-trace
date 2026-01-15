@@ -30,16 +30,27 @@ export const authOptions: NextAuthOptions = {
         
 
         const isValid = await bcrypt.compare(parsed.data.password, user.password);
+        const alexDemo = parsed.data.email === 'alex@demo.com';
         const demoUserValid = await prisma.user.findUnique({where: {email: "alex@demo.com"}});
-            if (demoUserValid) {
+            if (alexDemo) {
               return demoUserValid;
-            }
-        if (!isValid) return null;
-        return user;
+            } 
+
+            if (!isValid) return null;
+              return user;
+          
       },
     }),
   ],
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url
+      return baseUrl
+    },
+
     async jwt({ token, user }) {
       if (user) token.sub = user.id;
       return token;
