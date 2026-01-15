@@ -41,14 +41,17 @@
 
 
   /* color coded dots on chart */
-  --chart-diet: orange;
-  --chart-exercise: blue;
+  --color-chart-diet: orange;
+  --color-chart-exercise: blue;
   /*  burgundy */
-  --chart-nicotine: #800020; 
-  --chart-alcohol: #c29800;
-  --chart-caffeine: rgba(100,0,100,0);
-  --chart-symptom: red;
-  --chart-mood: #c77dff;
+ --color-chart-nicotine: #800020; 
+  --color-chart-alcohol: #c29800;
+--color-chart-caffeine: rgba(100,0,100,100);
+--color-chart-medicine-dark: white;
+--color-chart-medicine-light: black;
+--color-chart-symptom: red;
+--color-chart-mood: #c77dff;
+--color-chart-sleep: purple;
 
 }
 

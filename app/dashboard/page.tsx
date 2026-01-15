@@ -9,7 +9,7 @@ export default function Dashboard() {
 
   return (
       // {/* header */}
-      <div className="bg-surface-light bg-linear-to-tl from-pacific-200 to-surface-light dark:bg-surface-dark w-full min-h-screen flex flex-col">
+      <div className="bg-surface-light bg-linear-to-tl from-pacific-200 to-surface-light dark:to-surface-dark dark:from-pacific-800 w-full min-h-screen flex flex-col">
       {/* logout & dark mode container */}
       <div className="w-full px-14 py-4 flex justify-between items-center">
       <Greeting/>
