@@ -1,5 +1,6 @@
 import Button from "@/components/button/button";
 
+
 export default function LandingPage() {
   return (
       <main className="max-w-6xl mx-auto px-6 pt-20 pb-32 text-center">

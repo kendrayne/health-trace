@@ -1,9 +1,28 @@
 'use client';
 import Link from 'next/link';
 import { ArrowRight, LogOut } from 'lucide-react';
-import { signOut } from 'next-auth/react';
+import { signOut, signIn } from 'next-auth/react';
 type ButtonKey =  'logDay' | 'logMood' | 'login' | 'register' | 'getStartedHero' | 'alexDemoHero' | 'logout';
 export default function Button({href, title, buttonType} : {href: string, title: string, buttonType: ButtonKey}) {
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: "alex@demo.com",
+      password: "Demo1212!",
+    });
+
+
+
+    if (result?.error) {
+        console.log(result.error)
+    } else if (result?.ok) {
+      // redirect manually or reload
+      window.location.href = "/dashboard";
+    }
+  };
  const BUTTONMAP: Record<ButtonKey, string> = {
 
     login: 'group inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-pacific-100 px-6 py-2.5 font-medium text-pacific-900 transition-colors duration-300 hover:bg-pacific-900 hover:text-white dark:bg-pacific-800/80 dark:text-pacific-100 dark:hover:bg-pacific-100 dark:hover:text-pacific-900',
@@ -20,6 +39,16 @@ export default function Button({href, title, buttonType} : {href: string, title:
                 <button onClick={() => signOut()}>
                     <LogOut className={BUTTONMAP[buttonType]}/>
                 </button>
+        )
+    }
+    if (buttonType === 'alexDemoHero') {
+        return (
+            <form className='display-none' onSubmit={handleSubmit}>
+
+            <button className={BUTTONMAP[buttonType]} type='submit'>
+            <p>{title}</p>
+        </button>
+            </form>
         )
     } else return (
         <button className={BUTTONMAP[buttonType]}>

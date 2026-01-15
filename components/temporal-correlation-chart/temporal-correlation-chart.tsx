@@ -25,8 +25,13 @@ export const TemporalCorrelationChart = () => {
   return (
     <div className="w-full max-w-[80%] aspect-video p-12 bg-linear-to-tl from-pacific-100/40 to-surface-light/80 dark:to-pacific-700/80 dark:from-pacific-600 rounded-xl border border-peach-800/5 dark:border-pacific-800 shadow-sm relative overflow-hidden flex flex-col">
       
-      <div className="absolute top-0 right-0 w-32 h-12 bg-mint/10 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
-
+      <div className="absolute top-0 right-0 w-32 h-32 bg-violet-50/90 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
+      <div className="absolute top-0 left-20 w-32 h-32 bg-blue-100/60 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
+      <div className="absolute top-0 left-60 w-32 h-32 bg-purple-100/30 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
+      <div className="absolute top-90 left-0 w-32 h-32 bg-neutral-200/30 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
+      <div className="absolute top-90 right-0 w-32 h-32 bg-pacific-200/30 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
+      <div className="absolute top-0 right-70 w-32 h-32 bg-blue-200/20 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-32 h-32 bg-violet-200/50 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
       {/* legend */}
       <div className="w-full flex flex-wrap justify-end gap-2 mb-8 z-10">
         {categories.map((cat) => (

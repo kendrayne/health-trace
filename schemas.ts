@@ -14,6 +14,19 @@ export const LoginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
+export const HealthLogSchema = z.object({
+  alcohol: z.number,
+  nicotine: z.number,
+  caffeine: z.number,
+  mood: z.number,
+  sleep: z.number,
+  dietQuality: z.number,
+  exercise: z.number,
+  loggedSymptoms: z.array,
+  loggedMedications: z.string,
+
+
+})
 
 export const ReportSchema = z.object({
   startDate: z.date(),
