@@ -9,8 +9,7 @@ export default function Dashboard() {
 
   return (
       // {/* header */}
-
-      <div className="bg-surface-light dark:bg-surface-dark w-full h-100 min-h-screen flex flex-col">
+      <div className="bg-surface-light bg-linear-to-tl from-pacific-200 to-surface-light dark:bg-surface-dark w-full min-h-screen flex flex-col">
       {/* logout & dark mode container */}
       <div className="w-full px-14 py-4 flex justify-between items-center">
       <Greeting/>
@@ -23,13 +22,17 @@ export default function Dashboard() {
       </div>
 
           
-      <main className="w-full flex flex-row h-100 flex-1">
-      <div className="flex flex-col max-w-22 w-full gap-12 justify-center">
-      {/* tab drawer */}
-        <TabsDrawer/>
-      </div>
-      <TemporalCorrelationChart/>
-      </main>
+      <main className="w-full flex flex-1 overflow-scroll"> 
+
+  <div className="w-full max-h-screen max-w-20 shrink-0 justify-center fixed top-[33.333%]">
+    <TabsDrawer/>
+  </div>
+
+
+  <div className="flex-1 flex flex-col items-center justify-center p-12">
+    <TemporalCorrelationChart/>
+  </div>
+</main>
     </div>
 
   );

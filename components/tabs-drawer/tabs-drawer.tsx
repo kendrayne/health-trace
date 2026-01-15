@@ -47,12 +47,12 @@ export const TabsDrawer = () => {
 {TABS.map((tab) => (
     tab.href ? (
        <Link href={tab.href} key={tab.id} onClick={() => setActiveTab(tab.href!)}>
-        <div className={activeTab === tab.href ? 'border-l-peach-500 border-l-6 p-4' : "border-l-transparent border-l-6 p-4"}>
+        <div className={activeTab === tab.href ? 'border-l-purple-300 border-l-6 p-6' : "border-l-transparent border-l-6 p-6"}>
           {tab.icon}
         </div>
        </Link>
     ) : (
-       <div className={activeTab === tab.href ? 'border-l-peach-500 border-l-6 p-4' : "border-l-transparent border-l-6 p-4"} key={tab.id} onClick={() => setActiveTab(tab.href!)}>
+       <div className={activeTab === tab.href ? 'border-l-peach-300 border-l-6 p-6' : "border-l-transparent border-l-6 p-6"} key={tab.id} onClick={() => setActiveTab(tab.href!)}>
           {tab.icon}
         </div>
     )
