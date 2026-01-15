@@ -5,6 +5,7 @@ import Button from "@/components/button/button";
 import { TabsDrawer } from "@/components/tabs-drawer/tabs-drawer";
 import { TemporalCorrelationChart } from "@/components/temporal-correlation-chart/temporal-correlation-chart";
 import { Greeting } from "@/components/greeting/greeting";
+import { MainWrapper } from "./MainWrapper";
 export default function Dashboard() {
 
   return (
@@ -22,17 +23,7 @@ export default function Dashboard() {
       </div>
 
           
-      <main className="w-full flex flex-1 overflow-scroll"> 
-
-  <div className="w-full max-h-screen max-w-20 shrink-0 justify-center fixed top-[33.333%]">
-    <TabsDrawer/>
-  </div>
-
-
-  <div className="flex-1 flex flex-col items-center justify-center p-12">
-    <TemporalCorrelationChart/>
-  </div>
-</main>
+      <MainWrapper/>
     </div>
 
   );

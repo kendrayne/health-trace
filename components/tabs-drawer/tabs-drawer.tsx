@@ -1,6 +1,6 @@
 'use client';
 import { HeartPlus, HomeIcon, Settings, User2Icon } from "lucide-react";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TabContext } from "@/context/tab.context";
 
 import Link from "next/link";
@@ -8,14 +8,20 @@ import Link from "next/link";
 type TabOption = {
   id: "home" | "profile" | "addLog" | "settings"
   icon: React.ReactNode,
-  action?: () => {},
   href? : string 
 }[]
 
 export const TabsDrawer = () => {
-  const { activeTab, setActiveTab } = useContext(TabContext);
+  const { activeTab, setActiveTab, modalOpen, setModalOpen } = useContext(TabContext);
 
-
+  
+  const handleState = () => {
+    setActiveTab('addLog');
+    // Removed the immediate clearTimeout so the modal actually opens
+    setTimeout(() => {
+      setModalOpen(true);
+    }, 300); // Adjusted to 300ms for a snappier feel
+  };
 
     const TABS: TabOption = [
         {
@@ -26,8 +32,6 @@ export const TabsDrawer = () => {
         {
           id: "addLog", 
           icon: <HeartPlus className="w-7 h-7 stroke-pacific-500 dark:stroke-pacific-300"/>,
-          // action: () => {},
-          // create modal for comprehensive HealthLog creation
 
         },
         {
@@ -52,7 +56,7 @@ export const TabsDrawer = () => {
         </div>
        </Link>
     ) : (
-       <div className={activeTab === tab.href ? 'border-l-peach-300 border-l-6 p-6' : "border-l-transparent border-l-6 p-6"} key={tab.id} onClick={() => setActiveTab(tab.href!)}>
+       <div className={activeTab === tab.href ? 'border-l-peach-300 border-l-6 p-6' : "border-l-transparent border-l-6 p-6"} key={tab.id} onClick={() => handleState()}>
           {tab.icon}
         </div>
     )
