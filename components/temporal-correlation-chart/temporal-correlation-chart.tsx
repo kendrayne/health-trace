@@ -23,9 +23,9 @@ export const TemporalCorrelationChart = () => {
   const categories: ColorKey[] = ['diet', 'exercise', 'caffeine', 'sleep', 'symptom', 'nicotine', 'mood', 'alcohol', 'medicine'];
 
   return (
-    <div className="w-full max-w-[90%] aspect-video p-8 bg-linear-to-tl from-pacific-100/40 to-surface-light/80 dark:to-pacific-700/80 dark:from-pacific-600 rounded-xl border border-peach-800/5 dark:border-pacific-800 shadow-sm relative overflow-hidden flex flex-col">
+    <div className="w-full max-w-[80%] aspect-video p-12 bg-linear-to-tl from-pacific-100/40 to-surface-light/80 dark:to-pacific-700/80 dark:from-pacific-600 rounded-xl border border-peach-800/5 dark:border-pacific-800 shadow-sm relative overflow-hidden flex flex-col">
       
-      <div className="absolute top-0 right-0 w-32 h-32 bg-mint/10 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-32 h-12 bg-mint/10 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
 
       {/* legend */}
       <div className="w-full flex flex-wrap justify-end gap-2 mb-8 z-10">

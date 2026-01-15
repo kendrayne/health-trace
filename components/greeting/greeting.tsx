@@ -6,13 +6,13 @@ export const Greeting = () => {
     const [loaded, setLoaded] = useState(false);
 
     const {data: session} = useSession();
-    const name = session?.user?.name?.split(' '[0]);
+    const name = session?.user?.name?.split(' ')[0];
 
      const getTimeOfDay = () => {
      const timestamp: number = Date.now();
      const date: Date = new Date(timestamp);
      const hour = date.getHours()     
-     
+
      if (hour < 12 && hour > 3) return 'morning, ' + name +  '! ☀️' ;
      if (hour < 17 && hour >= 12) return 'afternoon, ' + name + '! 🌤️';
      else return 'evening, ' + name + ' ! 🌙';
