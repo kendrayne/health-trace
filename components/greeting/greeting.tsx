@@ -13,9 +13,9 @@ export const Greeting = () => {
      const date: Date = new Date(timestamp);
      const hour = date.getHours()     
 
-     if (hour < 12 && hour > 3) return 'morning,' + name +  '! ☀️' ;
-     if (hour < 17 && hour >= 12) return 'afternoon,' + name + '! 🌤️';
-     else return 'evening, ' + name + ' ! 🌙';
+     if (hour < 12 && hour > 3) return 'morning, ' + name +  '! ☀️' ;
+     if (hour < 17 && hour >= 12) return 'afternoon, ' + name + '! 🌤️';
+     else return 'evening, ' + name + '! 🌙';
   }
 
   useEffect(() => {

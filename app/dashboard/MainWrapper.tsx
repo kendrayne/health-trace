@@ -7,9 +7,10 @@ import { HealthLogModal } from "@/components/health-log-modal/health-log-modal"
 
 
 export const MainWrapper = () => {
+
+
     const { modalOpen, setModalOpen } = useContext(TabContext);
 
- 
 
      return !modalOpen ?(
     <main className="w-full flex flex-1 overflow-scroll"> 

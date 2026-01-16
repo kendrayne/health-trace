@@ -30,10 +30,13 @@ model User {
 
   // 0 (sedentary), 1 (light), 2 (moderate), 3 (high)
   physicalActivityLevel Int      @default(0)
+  dietQuality           Int     @default(1)
 
   // relations
   accounts              Account[]
   sessions              Session[]
+  onboarded             Boolean @default(false)
+
   conditions            UserCondition[]
   medications           Medication[]   
   symptoms              Symptom[]
@@ -172,15 +175,15 @@ model HealthLog {
   userId            String
   user              User               @relation(fields: [userId], references: [id])
   
-  // common lifestyle triggers 1 light 2 moderate 3 heavy
+  // common lifestyle triggers 0 light 1 moderate 2 heavy
   nicotine          Int?                @default(0) // 0-3
   marijuana         Int?                @default(0) // 0-3
   caffeine          Int?                @default(0) // 0-3
   alcohol           Int?                @default(0) // 0-3
   sleep             Int                @default(0) // 0-12
   // food + exercise tracking
-  /// 1 (healthy), 2 (average/balanced), 3 (real bad)
-  dietQuality       Int                @default(2)
+  /// 0 (healthy), 1 (average/balanced), 2 (real bad)
+  dietQuality       Int                @default(1)
 
   /// 0 (none), 1 (light), 2 (moderate), 3 (vigorous)
   exercise         Int?                @default(0)

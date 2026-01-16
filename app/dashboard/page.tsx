@@ -6,8 +6,16 @@ import { TabsDrawer } from "@/components/tabs-drawer/tabs-drawer";
 import { TemporalCorrelationChart } from "@/components/temporal-correlation-chart/temporal-correlation-chart";
 import { Greeting } from "@/components/greeting/greeting";
 import { MainWrapper } from "./MainWrapper";
-export default function Dashboard() {
+import { getServerSession } from "next-auth";
+import { authOptions } from "../lib/auth";
+import { redirect } from "next/navigation";
 
+
+export default async function Dashboard() {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.onboarded) redirect('/onboarding');
+  else
   return (
       // {/* header */}
       <div className="bg-surface-light bg-linear-to-tl from-pacific-200 to-surface-light dark:to-surface-dark dark:from-pacific-800 w-full min-h-screen flex flex-col">
