@@ -1,12 +1,16 @@
 'use client';
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { type Session } from "next-auth";
 
-export const Greeting = () => {
+interface UserProps {
+  user: Session["user"];
+}
+
+export const Greeting = ({user}: UserProps) => {
     const [loaded, setLoaded] = useState(false);
 
-    const {data: session} = useSession();
-    const name = session?.user?.name?.split(' ')[0];
+
+    const name = user?.name?.split(' ')[0];
 
      const getTimeOfDay = () => {
      const timestamp: number = Date.now();
@@ -19,13 +23,13 @@ export const Greeting = () => {
   }
 
   useEffect(() => {
-    if (session?.user) return setLoaded(true)
+    if (user) return setLoaded(true)
         else return;
-  }, [session?.user])
+  }, [user])
 return ( 
   loaded ? (
-        <h1 className="text-2xl absolute left-10 top-5 text-pacific-500 dark:pacific-100 px-18 transition-all opacity-100 duration-1000 translate-y-6 dark:text-white/80">{`Good ${getTimeOfDay()}`}</h1> 
-    ) : (<h1 className="text-2xl absolute left-10  text-pacific-300 dark:pacific-100 px-18 transition-all opacity-0 -top-1.25"></h1> )
+        <h1 className="text-2xl text-pacific-500 dark:pacific-100 px-18 transition-all opacity-100 duration-1000 translate-y-6 dark:text-white/80">{`Good ${getTimeOfDay()}`}</h1> 
+    ) : (<h1 className="text-2xl text-pacific-300 dark:pacific-100 px-18 transition-all opacity-0 -top-1.25"></h1> )
 )
 
 }

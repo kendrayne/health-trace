@@ -181,6 +181,7 @@ model HealthLog {
   caffeine          Int?                @default(0) // 0-3
   alcohol           Int?                @default(0) // 0-3
   sleep             Int                @default(0) // 0-12
+  mood              Int                 @default(0) // 0 - very bad, 1 - couldve be better, 2 - neutral 3 - happy 4 = perfect
   // food + exercise tracking
   /// 0 (healthy), 1 (average/balanced), 2 (real bad)
   dietQuality       Int                @default(1)

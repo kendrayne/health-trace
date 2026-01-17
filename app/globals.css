@@ -3,56 +3,56 @@
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Surface Colors */
-  --color-surface-light: #F6FDFF;
-  --color-surface-dark: #04151F;
 
-  /* Pacific Scale */
-   --color-pacific-50: #E7F3F5;
-   --color-pacific-100: #CFE7EB;
-   --color-pacific-200: #9FCED6;
-   --color-pacific-300: #6FB5C2;
-   --color-pacific-400: #4F9EAD;
-   --color-pacific-500: #388697;
-   --color-pacific-600: #2D6B79;
-   --color-pacific-700: #22515B;
-   --color-pacific-800: #17363D;
-   --color-pacific-900: #0B1B1E;
-
-  /* Peach Scale */
-   --color-peach-50: #FEF6F3;
-   --color-peach-100: #FDECE6;
-   --color-peach-200: #FAD0C1;
-   --color-peach-300: #F7B49C;
-   --color-peach-400: #F59E7E;
-   --color-peach-500: #F2A183;
-   --color-peach-600: #C28169;
-   --color-peach-700: #91614F;
-   --color-peach-800: #614035;
-   --color-peach-900: #30201A;
-
-  /* mint, might change to lavender */
-  --color-mint-light: #C9EDDC;
-  --color-mint: #A8DABD;
-  --color-mint-dark: #7FB89A;
-
-  --spacing-nav-padding: 3rem;
+  --color-surface-light: #F8FAFC; 
+  --color-surface-white: #FFFFFF;
+  --color-surface-dark: #09090b;
+  --color-surface-dark-elevated: #18181b;
 
 
+  --color-pacific-50: #F0FDFA;
+  --color-pacific-100: #CCFBF1;
+  --color-pacific-200: #99F6E4;
+  --color-pacific-300: #5EEAD4;
+  --color-pacific-400: #2DD4BF;
+  --color-pacific-500: #14B8A6;
+  --color-pacific-600: #0D9488;
+  --color-pacific-700: #0F766E;
+  --color-pacific-800: #115E59;
+  --color-pacific-900: #134E4A;
+  --color-pacific-950: #042F2E;
+  --color-pacific-1000: #042F2F;
 
-  /* color coded dots on chart */
-  --color-chart-diet: orange;
-  --color-chart-exercise: blue;
-  /*  burgundy */
- --color-chart-nicotine: #800020; 
-  --color-chart-alcohol: #c29800;
---color-chart-caffeine: rgba(100,0,100,100);
---color-chart-medicine-dark: white;
---color-chart-medicine-light: black;
---color-chart-symptom: red;
---color-chart-mood: #c77dff;
---color-chart-sleep: purple;
 
+  --color-peach-50: #FFF7ED;
+  --color-peach-100: #FFEDD5;
+  --color-peach-200: #FED7AA;
+  --color-peach-300: #FDBA74;
+  --color-peach-400: #FB923C;
+  --color-peach-500: #F97316;
+  --color-peach-600: #EA580C;
+  --color-peach-700: #C2410C;
+  --color-peach-800: #9A3412;
+  --color-peach-900: #7C2D12;
+
+
+  --color-chart-diet: #F97316; /* Orange */
+  --color-chart-exercise: #3B82F6; /* Blue */
+  --color-chart-nicotine: #BE123C; /* Rose */
+  --color-chart-alcohol: #EAB308; /* Yellow/Gold */
+  --color-chart-caffeine: #A855F7; /* Purple */
+  --color-chart-medicine: #14B8A6; /* Teal */
+  --color-chart-symptom: #EF4444; /* Red */
+  --color-chart-mood: #F472B6; /* Pink */
+  --color-chart-sleep: #6366F1; /* Indigo */
+
+
+  --animate-float: float 6s ease-in-out infinite;
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+  }
 }
 
 /* Base resets */
@@ -62,5 +62,22 @@
   }
   .dark {
     color-scheme: dark;
+  }
+  
+  body {
+    @apply bg-surface-light text-slate-800 dark:bg-surface-dark dark:text-slate-100 selection:bg-pacific-200 selection:text-pacific-900;
+  }
+}
+
+
+@layer components {
+
+  .glass-panel {
+    @apply bg-white/60 dark:bg-surface-dark-elevated/60 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-xl shadow-pacific-900/5;
+  }
+  
+
+  .input-modern {
+    @apply bg-white/50 dark:bg-black/20 border border-pacific-200 dark:border-pacific-800 rounded-lg px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-pacific-400 transition-all;
   }
 }

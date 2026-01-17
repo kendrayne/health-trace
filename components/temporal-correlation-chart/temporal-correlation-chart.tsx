@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { DayFrame } from "./day-frame/day-frame";
 import { CategoryKey, ColorKey } from "../category-key/category-key";
+import { type Session } from "next-auth";
+
+interface UserProps {
+  user: Session["user"];
+}
 
 type ChartEvent = { 
   timestamp: number;
@@ -18,58 +23,68 @@ const MOCK_DATA: ChartEvent = [
   { timestamp: 5, value: 3.333, type: 'alcohol' },
 ];
 
-export const TemporalCorrelationChart = () => {
+export const TemporalCorrelationChart = ({user}: UserProps) => {
   const [selectedRange, setSelectedRange] = useState(7);
+
   const categories: ColorKey[] = ['diet', 'exercise', 'caffeine', 'sleep', 'symptom', 'nicotine', 'mood', 'alcohol', 'medicine'];
 
   return (
-    <div className="w-full max-w-[80%] aspect-video p-12 bg-linear-to-tl from-pacific-100/40 to-surface-light/80 dark:to-pacific-700/80 dark:from-pacific-600 rounded-xl border border-peach-800/5 dark:border-pacific-800 shadow-sm relative overflow-hidden flex flex-col">
+
+    <div className="w-full max-w-[80%] aspect-2/1 p-8 glass-panel rounded-3xl relative overflow-hidden flex flex-col transition-all duration-500">
       
-      <div className="absolute top-0 right-0 w-32 h-32 bg-violet-50/90 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
-      <div className="absolute top-0 left-20 w-32 h-32 bg-blue-100/60 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
-      <div className="absolute top-0 left-60 w-32 h-32 bg-purple-100/30 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
-      <div className="absolute top-90 left-0 w-32 h-32 bg-neutral-200/30 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
-      <div className="absolute top-90 right-0 w-32 h-32 bg-pacific-200/30 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
-      <div className="absolute top-0 right-70 w-32 h-32 bg-blue-200/20 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-32 h-32 bg-violet-200/50 blur-3xl rounded-l -mr-16 -mt-16 pointer-events-none" />
-      {/* legend */}
-      <div className="w-full flex flex-wrap justify-end gap-2 mb-8 z-10">
+
+      <div className="absolute top-0 right-0 w-64 h-64 bg-pacific-300/20 blur-[80px] rounded-full pointer-events-none mix-blend-screen" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-peach-300/10 blur-[100px] rounded-full pointer-events-none mix-blend-screen" />
+      
+
+      <div className="w-full flex flex-wrap justify-center gap-1 mb-6 z-10">
         {categories.map((cat) => (
           <CategoryKey key={cat} category={cat} />
         ))}
       </div>
 
-      {/* chart layout */}
-      <div className="flex flex-row flex-1 w-full h-full min-h-0">
+
+      <div className="flex flex-row flex-1 w-full h-full min-h-0 relative z-10">
         
-        {/* yAxis */}
-        <div className="flex flex-col-reverse justify-between h-full pr-4 text-pacific-400 dark:text-pacific-500/60 font-mono text-[10px]">
+
+        <div className="flex flex-col-reverse justify-between h-full pr-4 text-pacific-400/70 dark:text-pacific-500/50 font-mono text-[10px] select-none">
           {[...Array(11)].map((_, i) => (
             <span key={i} className="leading-none">{i}</span>
           ))}
         </div>
 
-        {/* visualization */}
-        <div className="relative flex-1 h-full w-full border-l border-b border-surface-light/40 dark:border-surface-dark/40">
+        <div className="relative flex-1 h-full w-full">
           
+
           <div className="absolute inset-0 flex flex-col justify-between pointer-events-none z-0">
             {[...Array(11)].map((_, i) => (
-              <div key={i} className="w-full h-px bg-pacific-500/5 dark:bg-pacific-800/20" />
+              <div key={i} className="w-full h-px border-b border-dashed border-pacific-900/5 dark:border-pacific-100/10 last:border-0" />
             ))}
           </div>
 
-          <p className="absolute -left-8 top-1/2 -rotate-90 -translate-y-1/2 text-[9px] font-bold tracking-widest uppercase text-pacific-300/80">
+
+          <div className="absolute inset-0 flex pointer-events-none z-0">
+             {[...Array(selectedRange)].map((_, i) => (
+               <div key={i} className="flex-1 border-r border-dashed border-pacific-900/5 dark:border-pacific-100/10 last:border-0" />
+             ))}
+          </div>
+
+
+          <p className="absolute -left-6 top-1/2 -rotate-90 -translate-y-1/2 text-[9px] font-bold tracking-[0.2em] uppercase text-pacific-400/60">
             Severity
           </p>
-          <p className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[9px] font-bold tracking-widest uppercase text-pacific-300/80">
-            Time
+          <p className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] font-bold tracking-[0.2em] uppercase text-pacific-400/60">
+            Time (Days)
           </p>
+
 
           <div className="absolute inset-0 flex w-full h-full z-10">
             {[...Array(selectedRange)].map((_, i) => (
-              <div key={i} className="flex-1 h-full relative">
+              <div key={i} className="flex-1 h-full relative group">
                 <DayFrame num={i} selectedRange={selectedRange} />
-                <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-pacific-400 font-mono">
+                
+
+                <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-pacific-400 font-mono group-hover:text-pacific-600 dark:group-hover:text-pacific-200 transition-colors">
                   {i + 1}
                 </span>
               </div>

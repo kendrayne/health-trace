@@ -15,18 +15,18 @@ export const LoginSchema = z.object({
 });
 
 export const HealthLogSchema = z.object({
-  alcohol: z.number,
-  nicotine: z.number,
-  caffeine: z.number,
-  mood: z.number,
-  sleep: z.number,
-  dietQuality: z.number,
-  exercise: z.number,
-  loggedSymptoms: z.array,
-  loggedMedications: z.string,
-
-
+  alcohol: z.number().nullable(), 
+  nicotine: z.number().nullable(),
+  caffeine: z.number().nullable(),
+  marijuana: z.number().nullable(),
+  mood: z.number().nullable(),
+  sleep: z.number().nullable(),
+  dietQuality: z.number().nullable(),
+  exercise: z.number().nullable(),
+  loggedSymptoms: z.array(z.string()),
+  loggedMedications: z.array(z.string()),
 })
+
 
 export const ReportSchema = z.object({
   startDate: z.date(),
