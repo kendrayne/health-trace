@@ -121,7 +121,7 @@ export const HealthLogModal = ({ modalOpen, setModalOpen }: any) => {
 
 
                     <section className="space-y-4">
-                        <label className="text-xs font-bold text-pacific-400 uppercase tracking-widest">Current Mood</label>
+                        <label className="text-xs font-bold text-pacific-400 uppercase tracking-widest">Mood</label>
                         <div className="flex justify-between gap-2 p-2 bg-pacific-50/50 dark:bg-white/5 rounded-2xl">
                             {MOOD_OPTIONS.map((option) => {
                                 const Icon = option.icon;

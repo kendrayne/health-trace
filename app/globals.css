@@ -10,30 +10,35 @@
   --color-surface-dark-elevated: #18181b;
 
 
-  --color-pacific-50: #F0FDFA;
-  --color-pacific-100: #CCFBF1;
-  --color-pacific-200: #99F6E4;
-  --color-pacific-300: #5EEAD4;
-  --color-pacific-400: #2DD4BF;
-  --color-pacific-500: #14B8A6;
-  --color-pacific-600: #0D9488;
-  --color-pacific-700: #0F766E;
-  --color-pacific-800: #115E59;
-  --color-pacific-900: #134E4A;
-  --color-pacific-950: #042F2E;
-  --color-pacific-1000: #042F2F;
+   --color-pacific-50:  #F2FBFA;
+  --color-pacific-100: #D6F2EE;
+  --color-pacific-200: #B3E6DF;
+  --color-pacific-300: #84D1C7;
+  --color-pacific-400: #5BB7AD;
+  --color-pacific-500: #388697;
+  --color-pacific-600: #2F6F7D;
+  --color-pacific-700: #255A66;
+  --color-pacific-800: #1C444D;
+  --color-pacific-900: #123038;
+  --color-pacific-950: #0B1E23;
+  --color-pacific-1000:#071417;
 
 
-  --color-peach-50: #FFF7ED;
-  --color-peach-100: #FFEDD5;
-  --color-peach-200: #FED7AA;
-  --color-peach-300: #FDBA74;
-  --color-peach-400: #FB923C;
-  --color-peach-500: #F97316;
-  --color-peach-600: #EA580C;
-  --color-peach-700: #C2410C;
-  --color-peach-800: #9A3412;
-  --color-peach-900: #7C2D12;
+   --color-peach-50:  #FFF6F2;
+  --color-peach-100: #FDE6DB;
+  --color-peach-200: #F9CFC0;
+  --color-peach-300: #F6B7A1;
+  --color-peach-400: #F3A88F;
+  --color-peach-500: #F2A183; 
+  --color-peach-600: #E58C6A;
+  --color-peach-700: #CC7455;
+  --color-peach-800: #A95A42;
+  --color-peach-900: #7D4030;
+
+  --color-mint-light: #E9F7F3;
+  --color-mint-dark:  #1F3D38;
+  --color-lavender-light: #F2F0FA;
+  --color-lavender-dark:  #2A253D;
 
 
   --color-chart-diet: #F97316; /* Orange */
