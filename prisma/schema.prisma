@@ -116,7 +116,7 @@ model Symptom {
   bodyPartId     String
   bodyPart       BodyPart        @relation(fields: [bodyPartId], references: [id])
   description    String?
-  slug           String
+  slug           String?
   // relations for historical tracking
   loggedSymptoms LoggedSymptom[]
   createdAt      DateTime        @default(now())
