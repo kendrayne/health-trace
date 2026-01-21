@@ -737,17 +737,18 @@ async function main() {
     { slug: 'general', desc: 'Seizures (Convulsions)' }
 ];
 
-    for (const s of symptomLibrary) {
-        const partRecord = await prisma.bodyPart.findUnique({ where: { slug: s.slug } });
-        if (partRecord) {
-            await prisma.symptom.create({
-                data: {
-                    bodyPartId: partRecord.id,
-                    description: s.desc,
-                }
-            });
-        }
-    }
+    // for (const s of symptomLibrary) {
+    //     const partRecord = await prisma.bodyPart.findUnique({ where: { slug: s.slug } });
+    //     if (partRecord) {
+    //         await prisma.symptom.create({
+    //             data: {
+    //                 bodyPartId: partRecord.id,
+    //                 description: s.desc,
+
+    //             }
+    //         });
+    //     }
+    // }
     console.log('seed complete');
 }
 
