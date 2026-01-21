@@ -23,8 +23,10 @@ export const HealthLogSchema = z.object({
   sleep: z.number().nullable(),
   dietQuality: z.number().nullable(),
   exercise: z.number().nullable(),
-  loggedSymptoms: z.array(z.string()),
-  loggedMedications: z.array(z.string()),
+  water: z.number().nullable(),
+  loggedSymptoms: z.array(z.object()),
+  loggedMedications: z.array(z.object()),
+  userId: z.string()
 })
 
 

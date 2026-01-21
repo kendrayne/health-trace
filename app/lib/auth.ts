@@ -49,13 +49,17 @@ export const authOptions: NextAuthOptions = {
       else if (new URL(url).origin === baseUrl) return url
       return baseUrl
     },
-    async jwt({ token, user }) {
-      if (user) token.sub = user.id;
+    async jwt({ token, user, account }) {
+      if (user || account) {
+        token.sub = user.id;
+        token.accessToken = account?.access_token
+      }
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.sub) {
-          session.user.id = token.sub; 
+          session.user.id = token.sub;
+          session.accessToken = token.accessToken
       }
       const user = await prisma.user.findUnique({ where: { id: token.sub } });
       session.user.onboarded = user?.onboarded;

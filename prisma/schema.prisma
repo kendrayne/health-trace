@@ -39,7 +39,7 @@ model User {
 
   conditions            UserCondition[]
   medications           Medication[]   
-  symptoms              Symptom[]
+  loggedSymptoms              LoggedSymptom[]
   healthLogs            HealthLog[]
   reports               Report[]
   createdAt             DateTime  @default(now())
@@ -107,18 +107,16 @@ model BodyPart {
 
   // shorthand abbrv for body parts, find list in resources.md
   slug     String    @unique 
-  
+  keywords String[]
   symptoms Symptom[]
 }
 
 model Symptom {
   id             String          @id @default(cuid())
-  userId         String
-  user           User            @relation(fields: [userId], references: [id])
   bodyPartId     String
   bodyPart       BodyPart        @relation(fields: [bodyPartId], references: [id])
   description    String?
-  
+  slug           String
   // relations for historical tracking
   loggedSymptoms LoggedSymptom[]
   createdAt      DateTime        @default(now())
@@ -143,7 +141,8 @@ model Medication {
 model LoggedSymptom {
   id          String    @id @default(cuid())
   severity    Int       @default(1) // user input 1-10
-  
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
   symptomId   String
   symptom     Symptom   @relation(fields: [symptomId], references: [id])
   
@@ -185,12 +184,14 @@ model HealthLog {
   // food + exercise tracking
   /// 0 (healthy), 1 (average/balanced), 2 (real bad)
   dietQuality       Int                @default(1)
+  // how many est cups
+  water             Int                 @default(0)
 
   /// 0 (none), 1 (light), 2 (moderate), 3 (vigorous)
   exercise         Int?                @default(0)
 
   notes            String?            @db.Text
-  loggedSymptoms    LoggedSymptom[]
+  loggedSymptoms   LoggedSymptom[]
   loggedMedications LoggedMedication[]
 
   // normalized date - one log per user per day
