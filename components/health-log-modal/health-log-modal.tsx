@@ -87,7 +87,7 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 
-export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: boolean; setModalOpen: (v: boolean) => void, user: UserProps }) => {
+export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: boolean; setModalOpen: (v: boolean) => void, user: Session["user"] }) => {
     
     const [formDetails, setFormDetails] = useState<HealthLogData>({
         dietQuality: null, exercise: null, nicotine: null, alcohol: null,
