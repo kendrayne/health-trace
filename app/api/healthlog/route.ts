@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { prisma } from '@/app/lib/db';
+import { UserSessionSchema } from "@/schemas";
+import { z } from 'zod';
 
 const secret = process.env.NEXTAUTH_SECRET;
 
@@ -125,4 +127,40 @@ export async function POST(req: NextRequest) {
         console.error("HealthLog Create Error:", error);
         return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
     }
+}
+
+
+export async function GET(req: NextRequest, res: NextResponse) { 
+
+    const searchParams = req.nextUrl.searchParams;
+
+
+    const userId = searchParams.get('userId');
+
+    if (!userId) {
+        return NextResponse.json({ 
+           healthLogData: [],
+           message: "failed to retrieve userId from url.",
+        });
+    }
+    
+
+    try { 
+        const userHealthLogData = await prisma.healthLog.findMany({
+            where: { 
+                userId: userId
+            },
+          
+        });
+            console.log(userHealthLogData + "server query")
+        if (userHealthLogData.length <= 0) {
+            return NextResponse.json({success: true, message: "there are no health logs to send back."})
+        } 
+
+        return NextResponse.json({success: true, userHealthLogData, message: "Health log data fetch success"})
+    } catch (e) {
+        return NextResponse.json({success: false, message: "unable to fetch health log data.", e})
+    }
+
+
 }

@@ -36,5 +36,11 @@ export const ReportSchema = z.object({
 
 });
 
+export const UserSessionSchema = z.object({
+  userId: z.string(),
+  // name: z.string(),
+  // email: z.string(),
+})
+
 export type RegisterInput = z.infer<typeof RegisterSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;

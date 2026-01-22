@@ -4,6 +4,7 @@ import { useState } from "react";
 import { DayFrame } from "./day-frame/day-frame";
 import { CategoryKey, ColorKey } from "../category-key/category-key";
 import { type Session } from "next-auth";
+import { useEffect } from "react";
 
 interface UserProps {
   user: Session["user"];
@@ -23,8 +24,28 @@ const MOCK_DATA: ChartEvent = [
   { timestamp: 5, value: 3.333, type: 'alcohol' },
 ];
 
-export const TemporalCorrelationChart = ({user}: UserProps) => {
+export const TemporalCorrelationChart = ({user} : {user: Session['user']}) => {
   const [selectedRange, setSelectedRange] = useState(7);
+  const [healthLogData, setHealthLogData] = useState(null);
+  const [loadedHealthData, setLoadedHealthData] = useState(false)
+  const userId = user?.id;
+
+  useEffect(() => {
+    const fetchData = async () => {
+
+      const res = await fetch(`/api/healthlog?userId=${userId}`);
+      const data = await res.json();
+      const { success, userHealthLogData, message} = data;
+      if (success) { 
+        console.log(userHealthLogData + ": this is the client end res sent from server.")
+        setHealthLogData(userHealthLogData);
+        console.log(healthLogData);
+      }
+    }
+    fetchData();
+  }, [user])
+
+
 
   const categories: ColorKey[] = ['diet', 'exercise', 'caffeine', 'sleep', 'symptom', 'nicotine', 'mood', 'alcohol', 'medicine'];
 
