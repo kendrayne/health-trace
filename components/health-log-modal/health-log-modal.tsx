@@ -48,8 +48,8 @@ interface HealthLogData {
     marijuana: number | null;
     sleep: number | null;
     mood: number | null;
-    loggedSymptoms: LoggedSymptomItem[]; // FIXED TYPE
-    loggedMedications: LoggedMedicationItem[]; // FIXED TYPE
+    loggedSymptoms: LoggedSymptomItem[]; 
+    loggedMedications: LoggedMedicationItem[]; 
     water: number | null;
     userId: string | undefined;
 }

@@ -17,10 +17,10 @@ export const TabsDrawer = () => {
   
   const handleState = () => {
     setActiveTab('addLog');
-    // Removed the immediate clearTimeout so the modal actually opens
+
     setTimeout(() => {
       setModalOpen(true);
-    }, 300); // Adjusted to 300ms for a snappier feel
+    }, 300);
   };
 
     const TABS: TabOption = [
@@ -65,3 +65,8 @@ export const TabsDrawer = () => {
     )
 
 }
+
+
+
+
+

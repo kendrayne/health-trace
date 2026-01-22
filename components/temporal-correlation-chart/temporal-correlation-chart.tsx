@@ -16,6 +16,33 @@ type ChartEvent = {
   type: ColorKey;
 }[];
 
+interface LoggedSymptomItem {
+  id: string;
+  name: string;
+}
+
+interface LoggedMedicationItem {
+  name: string;
+  strength: number | null;
+  unit: string | null;
+}
+
+interface HealthLogData {
+    id: number | null;
+    dietQuality: number | null;
+    exercise: number | null;
+    nicotine: number | null;
+    alcohol: number | null;
+    caffeine: number | null;
+    marijuana: number | null;
+    sleep: number | null;
+    mood: number | null;
+    loggedSymptoms: LoggedSymptomItem[]; 
+    loggedMedications: LoggedMedicationItem[]; 
+    water: number | null;
+    userId: string | undefined;
+}
+
 const MOCK_DATA: ChartEvent = [
   { timestamp: 1, value: 1, type: 'mood' },
   { timestamp: 2, value: 6.666, type: 'diet' },
@@ -26,11 +53,13 @@ const MOCK_DATA: ChartEvent = [
 
 export const TemporalCorrelationChart = ({user} : {user: Session['user']}) => {
   const [selectedRange, setSelectedRange] = useState(7);
-  const [healthLogData, setHealthLogData] = useState(null);
+  const [healthLogData, setHealthLogData] = useState<HealthLogData[]>([]);
   const [loadedHealthData, setLoadedHealthData] = useState(false)
   const userId = user?.id;
 
   useEffect(() => {
+
+    if (!user) return;
     const fetchData = async () => {
 
       const res = await fetch(`/api/healthlog?userId=${userId}`);
@@ -38,12 +67,29 @@ export const TemporalCorrelationChart = ({user} : {user: Session['user']}) => {
       const { success, userHealthLogData, message} = data;
       if (success) { 
         console.log(userHealthLogData + ": this is the client end res sent from server.")
-        setHealthLogData(userHealthLogData);
+        const healthLogs = userHealthLogData.map((log: any) => ({
+          id: log.id,
+          alcohol: log.alcohol,
+          caffeine: log.caffeine,
+          nicotine: log.nicotine,
+          marijuana: log.marijuana,
+          dietQuality: log.dietQuality,
+          exercise: log.exercise,
+          mood: log.mood,
+          sleep: log.sleep, 
+          loggedSymptoms: log.symptoms,
+          loggedMedications: log.medications,
+          water: log.water
+
+        }))
+        setHealthLogData(healthLogs);
         console.log(healthLogData);
+        setLoadedHealthData(true)
       }
     }
+
     fetchData();
-  }, [user])
+  }, [user, loadedHealthData])
 
 
 
@@ -102,7 +148,7 @@ export const TemporalCorrelationChart = ({user} : {user: Session['user']}) => {
           <div className="absolute inset-0 flex w-full h-full z-10">
             {[...Array(selectedRange)].map((_, i) => (
               <div key={i} className="flex-1 h-full relative group">
-                <DayFrame num={i} selectedRange={selectedRange} />
+                <DayFrame num={i} selectedRange={selectedRange} userHealthLogData={healthLogData[i]}/>
                 
 
                 <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-pacific-400 font-mono group-hover:text-pacific-600 dark:group-hover:text-pacific-200 transition-colors">

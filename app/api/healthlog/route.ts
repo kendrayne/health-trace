@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { prisma } from '@/app/lib/db';
-import { UserSessionSchema } from "@/schemas";
-import { z } from 'zod';
 
 const secret = process.env.NEXTAUTH_SECRET;
 
-// Define strict types for the incoming payload
 interface LoggedSymptomPayload {
-    id: string; // The Symptom ID from the database
+    id: string;
     name: string;
 }
 
@@ -36,53 +33,45 @@ interface HealthLogSchema {
 export async function POST(req: NextRequest) {
     try {
         const token = await getToken({ req, secret });
-        if (!token) {
+
+
+        const body = await req.json() as HealthLogSchema;
+
+
+        const effectiveUserId = token?.sub || body.userId;
+
+        if (!effectiveUserId) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
-        const data = await req.json() as HealthLogSchema;
-
         const {
-            dietQuality,
-            exercise,
-            nicotine,
-            alcohol,
-            caffeine,
-            marijuana,
-            sleep,
-            mood,
-            loggedSymptoms,
-            loggedMedications,
-            water,
-            userId
-        } = data;
+            dietQuality, exercise, nicotine, alcohol, caffeine, 
+            marijuana, sleep, mood, loggedSymptoms, loggedMedications, water
+        } = body;
 
-        // 1. Prepare Medication Connections
-        // Since medications might not exist yet, we loop through them.
-        // We find the medication by name for this user, or create it if missing.
+
         const processedMedications = await Promise.all(
             (loggedMedications || []).map(async (med) => {
-                // Try to find existing medication for this user
+
                 let medication = await prisma.medication.findFirst({
                     where: {
-                        userId: userId,
-                        name: { equals: med.name, mode: 'insensitive' } // Case insensitive match
+                        userId: effectiveUserId,
+                        name: { equals: med.name, mode: 'insensitive' }
                     }
                 });
 
-                // If not found, create the Medication profile
+
                 if (!medication) {
                     medication = await prisma.medication.create({
                         data: {
                             name: med.name,
-                            userId: userId,
+                            userId: effectiveUserId, 
                             defaultStrength: med.strength,
                             unit: med.unit
                         }
                     });
                 }
 
-                // Return the data needed for the LoggedMedication entry
                 return {
                     medicationId: medication.id,
                     strengthTaken: med.strength
@@ -90,32 +79,31 @@ export async function POST(req: NextRequest) {
             })
         );
 
-        // 2. Create the Health Log with nested relations
+
         await prisma.healthLog.create({
             data: {
-                userId,
-                dietQuality,
-                exercise,
-                nicotine,
-                alcohol,
-                caffeine,
-                marijuana,
-                sleep,
-                mood,
-                water,
-                // Create Nested LoggedSymptoms
+                
+                user: {
+                    connect: { id: effectiveUserId }
+                },
+                dietQuality, exercise, nicotine, alcohol, 
+                caffeine, marijuana, sleep, mood, water,
+                
+
                 loggedSymptoms: {
                     create: (loggedSymptoms || []).map((sym) => ({
-                        symptomId: sym.id, // Connect using the ID passed from frontend
-                        userId: userId,
-                        severity: 1 // Default severity, or pass from frontend if you add that input later
+                        symptomId: sym.id,
+                        severity: 1,
+                        userId: effectiveUserId 
                     }))
                 },
-                // Create Nested LoggedMedications
+                
+
                 loggedMedications: {
                     create: processedMedications.map((med) => ({
                         medicationId: med.medicationId,
                         strengthTaken: med.strengthTaken
+
                     }))
                 }
             }
@@ -125,42 +113,29 @@ export async function POST(req: NextRequest) {
 
     } catch (error) {
         console.error("HealthLog Create Error:", error);
-        return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Internal Server Error", error: String(error) }, { status: 500 });
     }
 }
 
 
-export async function GET(req: NextRequest, res: NextResponse) { 
-
+export async function GET(req: NextRequest) { 
     const searchParams = req.nextUrl.searchParams;
-
-
     const userId = searchParams.get('userId');
 
-    if (!userId) {
-        return NextResponse.json({ 
-           healthLogData: [],
-           message: "failed to retrieve userId from url.",
-        });
-    }
-    
+    if (!userId) return NextResponse.json({ healthLogData: [], message: "No userId" });
 
     try { 
         const userHealthLogData = await prisma.healthLog.findMany({
-            where: { 
-                userId: userId
+            where: { userId: userId },
+            include: {
+                loggedSymptoms: { include: { symptom: true } }, // Include details
+                loggedMedications: { include: { medication: true } } // Include details
             },
-          
+            orderBy: { date: 'desc' }
         });
-            console.log(userHealthLogData + "server query")
-        if (userHealthLogData.length <= 0) {
-            return NextResponse.json({success: true, message: "there are no health logs to send back."})
-        } 
-
-        return NextResponse.json({success: true, userHealthLogData, message: "Health log data fetch success"})
+        
+        return NextResponse.json({ success: true, userHealthLogData });
     } catch (e) {
-        return NextResponse.json({success: false, message: "unable to fetch health log data.", e})
+        return NextResponse.json({ success: false, message: "Fetch failed", e })
     }
-
-
 }
