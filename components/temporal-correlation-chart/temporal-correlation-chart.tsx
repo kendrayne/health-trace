@@ -115,10 +115,8 @@ export const TemporalCorrelationChart = ({ user }: { user: Session['user'] }) =>
   return (
     <div className="w-full max-w-[95%] h-full p-6 glass-panel rounded-3xl relative overflow-hidden flex flex-col transition-all duration-500 bg-white/40 dark:bg-black/20 backdrop-blur-2xl border border-white/20 dark:border-white/5 shadow-xl">
       
-
       <div className="absolute top-0 right-0 w-64 h-64 bg-pacific-400/10 blur-[80px] rounded-full pointer-events-none mix-blend-multiply dark:mix-blend-screen" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-rose-300/10 blur-[100px] rounded-full pointer-events-none mix-blend-multiply dark:mix-blend-screen" />
-
 
       <div className="relative z-10 mb-6 px-2 flex justify-between items-end">
         <div>
@@ -134,7 +132,6 @@ export const TemporalCorrelationChart = ({ user }: { user: Session['user'] }) =>
       {/* Main chart area */}
       <div className="w-full min-h-[400px] relative z-10 flex flex-col">
         
-
         {hasNoData && (
           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-6 bg-white/50 dark:bg-black/50 backdrop-blur-sm rounded-xl border border-dashed border-pacific-300/30">
             <div className="p-3 bg-pacific-100 dark:bg-pacific-900/50 rounded-full mb-3 text-pacific-500">
@@ -164,7 +161,7 @@ export const TemporalCorrelationChart = ({ user }: { user: Session['user'] }) =>
           <ChartContainer config={chartConfig} className="h-full w-full">
             <LineChart
               data={healthLogData}
-              margin={{ top: 2, right: 10, bottom: 20, left: 10 }}
+              margin={{ top: 10, right: 10, bottom: 20, left: 10 }}
             >
               <CartesianGrid 
                 vertical={true} 
@@ -182,7 +179,8 @@ export const TemporalCorrelationChart = ({ user }: { user: Session['user'] }) =>
                 padding={{ left: 10, right: 10 }}
               />
               
-              <YAxis domain={[0, 105]} hide />
+              {/* UPDATED: Domain set to auto so chart fills window height */}
+              <YAxis domain={[0, 'auto']} hide />
 
               <ChartTooltip
                 cursor={{ stroke: "rgba(100,100,100,0.2)", strokeWidth: 1 }}
@@ -193,7 +191,7 @@ export const TemporalCorrelationChart = ({ user }: { user: Session['user'] }) =>
                   const symptoms = currentData.rawSymptoms || [];
 
                   return (
-                    <div className="min-w-[180px]rounded-xl border border-white/20 bg-white/80 dark:bg-zinc-900/90 p-3 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-xl text-xs">
+                    <div className="min-w-[180px] rounded-xl border border-white/20 bg-white/80 dark:bg-zinc-900/90 p-3 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-xl text-xs">
                       <div className="font-bold mb-3 text-pacific-900 dark:text-pacific-100 border-b border-pacific-200/50 dark:border-white/10 pb-2">
                         {label}
                       </div>
@@ -256,7 +254,6 @@ export const TemporalCorrelationChart = ({ user }: { user: Session['user'] }) =>
                     name={key} 
                   />
               ))}
-
 
               <ChartLegend 
                 content={
