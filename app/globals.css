@@ -41,15 +41,17 @@
   --color-lavender-light: #F2F0FA;
   --color-lavender-dark:  #2A253D;
 
-  --color-chart-diet: #F97316; /* Orange */
-  --color-chart-exercise: #3B82F6; /* Blue */
-  --color-chart-nicotine: #BE123C; /* Rose */
-  --color-chart-alcohol: #EAB308; /* Yellow/Gold */
-  --color-chart-caffeine: #A855F7; /* Purple */
-  --color-chart-medicine: #14B8A6; /* Teal */
-  --color-chart-symptom: #EF4444; /* Red */
-  --color-chart-mood: #F472B6; /* Pink */
-  --color-chart-sleep: #6366F1; /* Indigo */
+  --color-chart-diet: #F97316; 
+  --color-chart-exercise: #3B82F6; 
+  --color-chart-nicotine: #BE123C; 
+  --color-chart-alcohol: #EAB308;
+  --color-chart-marijuana: #62b567; 
+  --color-chart-caffeine: #A855F7; 
+  --color-chart-medicine: #14B8A6; 
+  --color-chart-symptom: #EF4444; 
+  --color-chart-mood: #F472B6; 
+  --color-chart-sleep: #6366F1; 
+  --color-chart-water: #1971e8;
 
   --animate-float: float 6s ease-in-out infinite;
   @keyframes float {
@@ -167,10 +169,6 @@
 
   --radius: 0.625rem;
 
-  --background: oklch(1 0 0);
-
-  --foreground: oklch(0.145 0 0);
-
   --card: oklch(1 0 0);
 
   --card-foreground: oklch(0.145 0 0);
@@ -228,6 +226,10 @@
   --sidebar-border: oklch(0.922 0 0);
 
   --sidebar-ring: oklch(0.708 0 0);
+
+  --background: oklch(1 0 0);
+
+  --foreground: oklch(0.145 0 0);
 }
 
 .dark {

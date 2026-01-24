@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "components/temporal-correlation-chart/day-frame/data-point/data-point.tsx"  ],
   "exclude": ["node_modules"]
 }
