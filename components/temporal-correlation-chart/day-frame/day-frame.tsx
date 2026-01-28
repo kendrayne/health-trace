@@ -50,6 +50,7 @@ interface HealthLogData {
     loggedMedications: LoggedMedicationItem[]; 
     water: number | null;
     userId: string | undefined;
+    date: string
 }
 
 interface DayFrameProps {
@@ -83,17 +84,20 @@ exercise,
 mood,
 sleep,
 water,
+date,
 loggedMedications,
 loggedSymptoms
   } = userHealthLogData;
 
+// make it look clickable
+// once clicked, display tooltip that says descriptions of the symptoms that were tracked.
 
    return loggedSymptoms.length ? (
       <div className="flex-1 h-full bg-red-300/40 overflow-hidden border-b border-r last:border-r-0 relative">
         {/* i want to create something better than just a red bg for noting a symptom was tracked tht day. something less
         aggressive, but still should be the first thing a user notices. maybe block out a certain section horizontally to
         indicate hey, you should look at your habits within the last 6 hours.. or something, not sure yet. */}
-      {/* <DataPoint categoryName={"dietQuality"} categoryData={dietQuality}/> */}
+      <DataPoint categoryName={"dietQuality"} categoryData={dietQuality}/>
       <DataPoint categoryName={"alcohol"} categoryData={alcohol}/>
       <DataPoint categoryName={"caffeine"} categoryData={caffeine}/>
       <DataPoint categoryName={"nicotine"} categoryData={nicotine}/>

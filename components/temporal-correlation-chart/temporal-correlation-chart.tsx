@@ -42,6 +42,7 @@ interface HealthLogData {
     loggedMedications: LoggedMedicationItem[]; 
     water: number | null;
     userId: string | undefined;
+    date: string
 }
 
 const MOCK_DATA: ChartEvent = [
@@ -80,7 +81,8 @@ export const TemporalCorrelationChart = ({user} : {user: Session['user']}) => {
           sleep: log.sleep, 
           loggedSymptoms: symptoms,
           loggedMedications: medications,
-          water: log.water
+          water: log.water,
+          date: log.date
 
         }))
         setHealthLogData(resHealthLogs);

@@ -5,7 +5,8 @@ import {
     X, Laugh, Smile, Meh, Frown, HeartCrack, 
     Search, Plus, Pill, Activity, Trash2,
     Wine, Cigarette, Leaf, Dumbbell, Utensils,
-    Droplets, Minus, Moon, Check, Loader2, Coffee
+    Droplets, Minus, Moon, Check, Loader2, Coffee,
+    Clock // Added Clock icon
 } from "lucide-react"; 
 import { format } from "date-fns";
 import { cn } from "@/app/lib/utils"; 
@@ -17,7 +18,6 @@ interface UserProps {
   id: string
 } 
 
-
 interface SymptomGroup {
   id: string;
   name: string;
@@ -27,10 +27,11 @@ interface SymptomGroup {
   }[];
 }
 
-
 interface LoggedSymptomItem {
   id: string;
   name: string;
+  severity: number;
+  occuredAt: string; 
 }
 
 interface LoggedMedicationItem {
@@ -55,6 +56,7 @@ interface HealthLogData {
 }
 
 
+
 const SEVERITY_LEVELS = [
     { value: 0, label: "None", color: "bg-slate-100 text-slate-400 dark:bg-slate-800" },
     { value: 1, label: "Light", color: "bg-pacific-100 text-pacific-700 dark:bg-pacific-900/30 dark:text-pacific-300" },
@@ -77,6 +79,7 @@ const MOOD_OPTIONS = [
 ];
 
 
+
 function useDebounce<T>(value: T, delay: number): T {
     const [debouncedValue, setDebouncedValue] = useState(value);
     useEffect(() => {
@@ -87,8 +90,10 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 
+
 export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: boolean; setModalOpen: (v: boolean) => void, user: Session["user"] }) => {
     
+
     const [formDetails, setFormDetails] = useState<HealthLogData>({
         dietQuality: null, exercise: null, nicotine: null, alcohol: null,
         caffeine: null, marijuana: null, sleep: null, mood: null,
@@ -98,17 +103,20 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
         userId: user?.id
     });
 
+
     const [symptomQuery, setSymptomQuery] = useState("");
     const debouncedSymptomQuery = useDebounce(symptomQuery, 300);
-
     const [isSearching, setIsSearching] = useState(false);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isSubmitting, setIsSubmitting] = useState(false);
     
+
+    const [pendingSymptom, setPendingSymptom] = useState<{id: string, name: string} | null>(null);
+
+
     const [medInput, setMedInput] = useState(""); 
     const [symptomResults, setSymptomResults] = useState<SymptomGroup[]>([]);
 
-  // query for symptoms when searching
+
     useEffect(() => {
         let isActive = true;
 
@@ -132,7 +140,6 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                     const cleanData = bodyPartsSymptomsQuery.map((group: any) => ({
                         id: group.id,
                         name: group.name,
-                       
                         symptoms: group.symptoms.map((s: any) => ({
                             id: s.id,
                             description: s.description
@@ -148,11 +155,7 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                         const bpId = sym.bodyPart.id;
 
                         if (!groupedMap[bpName]) {
-                            groupedMap[bpName] = {
-                                id: bpId,
-                                name: bpName,
-                                symptoms: []
-                            };
+                            groupedMap[bpName] = { id: bpId, name: bpName, symptoms: [] };
                         }
                        
                         groupedMap[bpName].symptoms.push({
@@ -174,57 +177,43 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
         };
 
         searchSymptoms();
-
         return () => { isActive = false; };
     }, [debouncedSymptomQuery]); 
 
-    // --- Handlers ---
+    // --- HANDLERS ---
 
-    const toggleSymptom = (symptom: { id: string, description: string }) => {
-        setFormDetails(prev => {
-            const exists = prev.loggedSymptoms.some(s => s.id === symptom.id);
-            if (exists) {
-                
-                return {
-                    ...prev,
-                    loggedSymptoms: prev.loggedSymptoms.filter(s => s.id !== symptom.id)
-                };
-            } else {
-            
-                return {
-                    ...prev,
-                    loggedSymptoms: [...prev.loggedSymptoms, { id: symptom.id, name: symptom.description }]
-                };
-            }
-        });
+    const handleSymptomClick = (symptom: { id: string, description: string }) => {
+        const exists = formDetails.loggedSymptoms.some(s => s.id === symptom.id);
+        
+        if (exists) {
+            setFormDetails(prev => ({
+                ...prev,
+                loggedSymptoms: prev.loggedSymptoms.filter(s => s.id !== symptom.id)
+            }));
+        } else {
+            // Open the Severity Window
+            setPendingSymptom({ id: symptom.id, name: symptom.description });
+        }
     };
 
-    const addMedication = () => {
-        if (!medInput.trim()) return;
+    const finalizeSymptom = (severity: number, time: string) => {
+        if (!pendingSymptom) return;
 
-    
-        const regex = /^(\d+(?:\.\d+)?)\s*([a-zA-Z]+)?\s+(.+)$/;
-        const match = medInput.match(regex);
-
-        let newMed: LoggedMedicationItem;
-
-        if (match) {
-            newMed = {
-                strength: parseFloat(match[1]),
-                unit: match[2] || 'mg', // default mg
-                name: match[3]
-            };
-        } else {
-
-            newMed = {
-                name: medInput,
-                strength: null,
-                unit: null
-            };
-        }
-
-        setFormDetails(prev => ({ ...prev, loggedMedications: [...prev.loggedMedications, newMed] }));
-        setMedInput(""); 
+        setFormDetails(prev => ({
+            ...prev,
+            loggedSymptoms: [
+                ...prev.loggedSymptoms,
+                { 
+                    id: pendingSymptom.id, 
+                    name: pendingSymptom.name, 
+                    severity, 
+                    occuredAt: time 
+                }
+            ]
+        }));
+        
+        setPendingSymptom(null); // Close popup
+        setSymptomQuery(""); // Optional: clear search after adding
     };
 
     const removeSymptom = (index: number) => {
@@ -232,6 +221,26 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
             ...prev,
             loggedSymptoms: prev.loggedSymptoms.filter((_, i) => i !== index)
         }));
+    };
+
+    const addMedication = () => {
+        if (!medInput.trim()) return;
+        const regex = /^(\d+(?:\.\d+)?)\s*([a-zA-Z]+)?\s+(.+)$/;
+        const match = medInput.match(regex);
+        let newMed: LoggedMedicationItem;
+
+        if (match) {
+            newMed = {
+                strength: parseFloat(match[1]),
+                unit: match[2] || 'mg', 
+                name: match[3]
+            };
+        } else {
+            newMed = { name: medInput, strength: null, unit: null };
+        }
+
+        setFormDetails(prev => ({ ...prev, loggedMedications: [...prev.loggedMedications, newMed] }));
+        setMedInput(""); 
     };
 
     const removeMedication = (index: number) => {
@@ -244,19 +253,15 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-        
         try {
             const res = await fetch('/api/healthlog', {
                 method: 'POST',
                 body: JSON.stringify(formDetails),
                 headers: { "Content-Type" : 'application/json' },
             });
-            
             const data = await res.json();
-            
             if(data.success) {
                 setModalOpen(false);
-                // i'd like to add some sort of animation on success!!!!
             } else {
                 console.error(data.message);
             }
@@ -268,25 +273,42 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
     }
 
     useEffect(() => {
-        const handleEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') setModalOpen(false) };
+        const handleEsc = (e: KeyboardEvent) => { 
+
+            if (pendingSymptom && e.key === 'Escape') {
+                setPendingSymptom(null);
+                return;
+            }
+            if (e.key === 'Escape') setModalOpen(false) 
+        };
         window.addEventListener('keydown', handleEsc);
         return () => window.removeEventListener('keydown', handleEsc);
-    }, [setModalOpen]);
+    }, [setModalOpen, pendingSymptom]);
 
     if (!modalOpen) return null;
 
     return (
         <form className="fixed inset-0 z-50 flex items-center justify-center p-4" onSubmit={handleSubmit}>
             
+
             <div 
                 className="absolute inset-0 bg-pacific-900/30 dark:bg-black/80 backdrop-blur-md transition-opacity duration-300" 
                 onClick={() => setModalOpen(false)}
             />
 
-            {/* Modal */}
+
             <div className="relative w-full max-w-5xl bg-white/95 dark:bg-[#0A0A0A]/95 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-2xl rounded-3xl flex flex-col h-[92vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                 
-                {/* Header */}
+
+                {pendingSymptom && (
+                    <SeverityWindow 
+                        symptomName={pendingSymptom.name}
+                        onSelect={finalizeSymptom}
+                        onCancel={() => setPendingSymptom(null)}
+                    />
+                )}
+
+
                 <div className="flex justify-between items-center px-6 py-4 border-b border-pacific-100/50 dark:border-white/5 bg-white/50 dark:bg-white/5 shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="h-8 w-1 bg-pacific-500 rounded-full" />
@@ -302,14 +324,14 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                     </button>
                 </div>
 
-                {/* main content grid */}
+
                 <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 min-h-0 divide-y lg:divide-y-0 lg:divide-x divide-pacific-100 dark:divide-white/5">
                     
-                    {/* LEFT COLUMN: habits & mood */}
+
                     <div className="relative lg:col-span-7 flex flex-col min-h-0">
-                        
                         <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-5 pb-12 lg:pb-5">
-                                {/* MOOD */}
+                            
+
                             <section>
                                 <label className="text-[10px] font-bold text-pacific-400 uppercase tracking-widest mb-2 block">Current Mood</label>
                                 <div className="flex gap-2 p-1.5 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5">
@@ -334,7 +356,7 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                                 </div>
                             </section>
 
-                            {/* HABITS WATER AND SLEEP CONTAINER */}
+
                             <section className="space-y-4">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
                                     <HabitControl icon={Wine} label="Alcohol" value={formDetails.alcohol} onChange={(v) => setFormDetails({...formDetails, alcohol: v})} />
@@ -346,7 +368,7 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                                 </div>
                                 
                                 <div className="grid grid-cols-2 gap-x-5 gap-y-4 pt-1">
-                                    {/* Water */}
+
                                     <div className="space-y-2">
                                         <div className="flex items-center gap-2 text-pacific-800 dark:text-pacific-200">
                                             <div className="p-1.5 bg-pacific-100 dark:bg-pacific-900/30 rounded-md">
@@ -376,7 +398,7 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                                         </div>
                                     </div>
 
-                                    {/* SLEEP */}
+
                                     <div className="space-y-2">
                                         <div className="flex items-center gap-2 text-pacific-800 dark:text-pacific-200">
                                             <div className="p-1.5 bg-pacific-100 dark:bg-pacific-900/30 rounded-md">
@@ -400,16 +422,12 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                                 </div>
                             </section>
                         </div>
-                        
-                        <div className="absolute -bottom-5 left-0 right-0 h-12 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-[#0A0A0A] dark:via-[#0A0A0A]/80 pointer-events-none lg:hidden flex items-end justify-center pb-2">
-                            <div className="w-12 h-1 bg-slate-200 dark:bg-white/20 rounded-full opacity-50" />
-                        </div>
                     </div>
 
-                    {/* RIGHT: symptoms and meds */}
+
                     <div className="lg:col-span-5 flex flex-col h-full bg-slate-50/50 dark:bg-black/20">
                         
-                        {/* symptoms */}
+
                         <div className="flex-1 flex flex-col min-h-0 border-b border-pacific-100 dark:border-white/5">
                             <div className="p-4 pb-2 shrink-0">
                                 <label className="text-[10px] font-bold text-pacific-400 uppercase tracking-widest flex items-center gap-2 mb-3">
@@ -433,6 +451,7 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                             </div>
 
                             <div className="flex-1 overflow-y-auto custom-scrollbar px-4 pb-4 space-y-4">
+
                                 {symptomResults.map(part => (
                                     <div key={part.id} className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                                         <h4 className="sticky top-0 z-10 bg-slate-50/95 dark:bg-[#0A0A0A]/95 backdrop-blur-sm text-[10px] font-bold text-pacific-400 uppercase tracking-widest py-2 mb-1">
@@ -445,7 +464,7 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                                                     <button 
                                                         type="button"
                                                         key={`${part.id}-${sym.id}-${i}`}
-                                                        onClick={() => toggleSymptom(sym)}
+                                                        onClick={() => handleSymptomClick(sym)}
                                                         className={cn(
                                                             "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-all duration-200",
                                                             isLogged 
@@ -462,18 +481,23 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                                     </div>
                                 ))}
 
-                                {!symptomQuery && formDetails.loggedSymptoms.length > 0 && (
+
+                                {formDetails.loggedSymptoms.length > 0 && (
                                     <div className="pt-2">
-                                        <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Selected</h4>
+                                        {!symptomQuery && <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Selected</h4>}
                                         <div className="flex flex-wrap gap-2">
                                             {formDetails.loggedSymptoms.map((sym, i) => (
                                                 <button 
                                                     type="button"
                                                     key={sym.id} 
                                                     onClick={() => removeSymptom(i)}
-                                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-500/30 dark:text-red-300 text-xs font-medium rounded-lg"
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-500/30 dark:text-red-300 text-xs font-medium rounded-lg group"
                                                 >
-                                                    {sym.name} <X size={10} />
+                                                    <span className="w-5 h-5 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center font-bold text-[10px] mr-1">
+                                                        {sym.severity}
+                                                    </span>
+                                                    {sym.name} 
+                                                    <X size={12} className="opacity-50 group-hover:opacity-100"/>
                                                 </button>
                                             ))}
                                         </div>
@@ -488,7 +512,7 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                             </div>
                         </div>
 
-                        {/* medications */}
+
                         <div className="h-1/3 flex flex-col min-h-[150px] bg-white dark:bg-white/5">
                             <div className="p-4 pb-2 shrink-0">
                                 <label className="text-[10px] font-bold text-pacific-400 uppercase tracking-widest flex items-center gap-2 mb-3">
@@ -532,7 +556,7 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                     </div>
                 </div>
 
-                {/* action buttons */}
+
                 <div className="p-4 z-20 border-t border-pacific-100/50 dark:border-white/5 bg-white/80 dark:bg-black/40 flex justify-end gap-3 backdrop-blur-md shrink-0">
                     <button 
                         type="button"
@@ -541,8 +565,12 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
                     >
                         Cancel
                     </button>
-                    <button className="px-6 py-2 bg-pacific-600 hover:bg-pacific-500 text-white rounded-xl shadow-lg shadow-pacific-600/20 text-xs font-bold uppercase tracking-wider transition-all transform active:scale-95" type="submit">
-                        Save Entry
+                    <button 
+                        disabled={isSubmitting}
+                        className="px-6 py-2 bg-pacific-600 hover:bg-pacific-500 disabled:opacity-50 text-white rounded-xl shadow-lg shadow-pacific-600/20 text-xs font-bold uppercase tracking-wider transition-all transform active:scale-95" 
+                        type="submit"
+                    >
+                        {isSubmitting ? "Saving..." : "Save Entry"}
                     </button>
                 </div>
             </div>
@@ -550,7 +578,7 @@ export const HealthLogModal = ({ modalOpen, setModalOpen, user }: { modalOpen: b
     );
 };
 
-// --- habit subcomponent ---
+// --- sub-components ---
 
 interface HabitControlProps {
     icon: any;
@@ -591,6 +619,101 @@ const HabitControl = ({ icon: Icon, label, value, onChange, variant = 'default' 
                         </button>
                     );
                 })}
+            </div>
+        </div>
+    );
+};
+
+interface SeverityWindowProps {
+    symptomName: string;
+    onSelect: (severity: number, time: string) => void;
+    onCancel: () => void;
+}
+
+const SeverityWindow = ({ symptomName, onSelect, onCancel }: SeverityWindowProps) => {
+    const [localSeverity, setLocalSeverity] = useState<number | null>(null);
+    const [time, setTime] = useState(() => {
+        const now = new Date();
+        return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    });
+
+    const handleSave = () => {
+        if (localSeverity !== null) {
+            onSelect(localSeverity, time);
+        }
+    };
+
+    return (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-[#111] border border-pacific-100 dark:border-white/10 shadow-2xl p-6 rounded-2xl w-full max-w-sm mx-4 transform transition-all scale-100 animate-in zoom-in-95 flex flex-col gap-6">
+                
+                <div className="text-center">
+                    <h3 className="text-pacific-900 dark:text-white font-bold text-lg">
+                        <span className="text-pacific-600">{symptomName}</span> details
+                    </h3>
+                    <p className="text-slate-400 text-xs uppercase tracking-widest mt-1">Severity & Time</p>
+                </div>
+
+                <div className="grid grid-cols-5 gap-2">
+                    {[...Array(10)].map((_, i) => {
+                        const val = i + 1;
+                        const isSelected = localSeverity === val;
+                        
+                        let colorClass = "hover:bg-pacific-100 dark:hover:bg-pacific-900/30 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300";
+                        if (val >= 4) colorClass = "hover:bg-yellow-50 hover:border-yellow-200 hover:text-yellow-600 dark:hover:bg-yellow-900/20 text-slate-600 dark:text-slate-300";
+                        if (val >= 7) colorClass = "hover:bg-red-50 hover:border-red-200 hover:text-red-600 dark:hover:bg-red-900/20 text-slate-600 dark:text-slate-300";
+
+                        if (isSelected) {
+                            if (val < 4) colorClass = "bg-pacific-500 border-pacific-600 text-white shadow-md shadow-pacific-500/20 ring-2 ring-pacific-200 dark:ring-pacific-900";
+                            else if (val < 7) colorClass = "bg-yellow-500 border-yellow-600 text-white shadow-md shadow-yellow-500/20 ring-2 ring-yellow-200 dark:ring-yellow-900";
+                            else colorClass = "bg-red-500 border-red-600 text-white shadow-md shadow-red-500/20 ring-2 ring-red-200 dark:ring-red-900";
+                        }
+
+                        return (
+                            <button
+                                key={val}
+                                type="button"
+                                onClick={() => setLocalSeverity(val)}
+                                className={cn(
+                                    "h-10 rounded-lg border text-sm font-bold transition-all duration-200",
+                                    colorClass
+                                )}
+                            >
+                                {val}
+                            </button>
+                        );
+                    })}
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                        <Clock size={12} /> Occurred At
+                    </label>
+                    <input 
+                        type="time"
+                        value={time}
+                        onChange={(e) => setTime(e.target.value)}
+                        className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-semibold text-pacific-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pacific-500/50 transition-all"
+                    />
+                </div>
+
+                <div className="flex gap-3 mt-2">
+                    <button 
+                        onClick={onCancel}
+                        type="button" 
+                        className="flex-1 py-3 bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        onClick={handleSave}
+                        disabled={localSeverity === null}
+                        type="button" 
+                        className="flex-[2] py-3 bg-pacific-600 hover:bg-pacific-500 disabled:opacity-50 disabled:hover:bg-pacific-600 text-white rounded-xl shadow-lg shadow-pacific-600/20 text-xs font-bold uppercase tracking-widest transition-all transform active:scale-95"
+                    >
+                        Save Symptom
+                    </button>
+                </div>
             </div>
         </div>
     );
